@@ -1,0 +1,2 @@
+# vagrant
+Vagrant file collection
