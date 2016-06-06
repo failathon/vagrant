@@ -1,0 +1,57 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+#
+# from https://github.com/markhuber/modern-ie-vagrant
+
+ENV['VAGRANT_SERVER_URL'] ||= 'http://vagrant.markhuber.net/catalog'
+
+boxes = [
+  {:name => "IE10-Win7", :box => "dealertrack/IE10-Win7"},
+  {:name => "IE10-Win8", :box => "dealertrack/IE10-Win8"},
+  {:name => "IE11-Win10", :box => "dealertrack/IE11-Win10"},
+  {:name => "IE11-Win7", :box => "dealertrack/IE11-Win7"},
+  {:name => "IE11-Win8.1", :box => "dealertrack/IE11-Win8.1"},
+  {:name => "IE6-WinXP", :box => "dealertrack/IE6-WinXP"},
+  {:name => "IE7-Vista", :box => "dealertrack/IE7-Vista"},
+  {:name => "IE8-Win7", :box => "dealertrack/IE8-Win7"},
+  {:name => "IE8-WinXP", :box => "dealertrack/IE8-WinXP"},
+  {:name => "IE9-Win7", :box => "dealertrack/IE9-Win7"}
+]
+
+Vagrant.configure(2) do |config|
+	# Map each box name against the vagrant catalog from mark huber
+	boxes.each do |box|
+		config.vm.define box[:name], autostart: false do |machine|
+			machine.vm.box = box[:box]
+		end
+	end
+
+	# Increase vRAM from 512MB to 1GB
+	config.vm.provider "virtualbox" do |vb|
+		vb.memory = 1024
+		vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional']
+	end
+
+	# Disable shared folder
+	config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
+
+	# Increase concurrent connections, otherwise you may have issues with provisioning
+	config.vm.provision "shell", inline: 'cmd.exe /c \'winrm s winrm/config/Service @{MaxConcurrentOperationsPerUser="1500"}\''
+	
+	# Silent install of mRemoteNG
+	config.vm.provision "file", source: "LabConnections.xml", destination: "c:/tmp/LabConnections.xml"
+	config.vm.provision "file", source: "install/mRemoteNG-Installer-1.72.exe", destination: "c:/tmp/mRemoteNG-Installer-1.72.exe"
+	config.vm.provision "shell", inline: "c:/tmp/mRemoteNG-Installer-1.72.exe /S"
+
+	# Drop shortcut on desktop
+	config.vm.provision "shell", inline: '$w = New-Object -ComObject WScript.Shell;$s = $w.CreateShortcut("$Home\Desktop\mRemoteNG.lnk");$s.TargetPath = "C:\Program Files\mRemoteNG\mRemoteNG.exe";$s.WorkingDirectory = "C:\Program Files\mRemoteNG";$s.Save();'
+
+	# Update hosts files within guest(s)
+	config.vm.provision :hosts do |provisioner|
+		provisioner.autoconfigure = true
+		provisioner.sync_hosts = true
+
+		# scrubbed for security purposes
+		provisioner.add_host '<IP here>', ['<fqdn>', '<short name>']
+	end
+end
