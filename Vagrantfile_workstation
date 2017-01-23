@@ -6,22 +6,22 @@
 ENV['VAGRANT_SERVER_URL'] ||= 'http://vagrant.markhuber.net/catalog'
 
 boxes = [
-  {:name => "IE10-Win7", :box => "dealertrack/IE10-Win7"},
-  {:name => "IE10-Win8", :box => "dealertrack/IE10-Win8"},
-  {:name => "IE11-Win10", :box => "dealertrack/IE11-Win10"},
-  {:name => "IE11-Win7", :box => "dealertrack/IE11-Win7"},
-  {:name => "IE11-Win8.1", :box => "dealertrack/IE11-Win8.1"},
-  {:name => "IE6-WinXP", :box => "dealertrack/IE6-WinXP"},
-  {:name => "IE7-Vista", :box => "dealertrack/IE7-Vista"},
-  {:name => "IE8-Win7", :box => "dealertrack/IE8-Win7"},
-  {:name => "IE8-WinXP", :box => "dealertrack/IE8-WinXP"},
-  {:name => "IE9-Win7", :box => "dealertrack/IE9-Win7"}
+  {:name => "IE10-Win7", :box => "dealertrack/IE10-Win7", :primary => false},
+  {:name => "IE10-Win8", :box => "dealertrack/IE10-Win8", :primary => false},
+  {:name => "IE11-Win10", :box => "dealertrack/IE11-Win10", :primary => false},
+  {:name => "IE11-Win7", :box => "dealertrack/IE11-Win7", :primary => true},
+  {:name => "IE11-Win8.1", :box => "dealertrack/IE11-Win8.1", :primary => false},
+  {:name => "IE6-WinXP", :box => "dealertrack/IE6-WinXP", :primary => false},
+  {:name => "IE7-Vista", :box => "dealertrack/IE7-Vista", :primary => false},
+  {:name => "IE8-Win7", :box => "dealertrack/IE8-Win7", :primary => false},
+  {:name => "IE8-WinXP", :box => "dealertrack/IE8-WinXP", :primary => false},
+  {:name => "IE9-Win7", :box => "dealertrack/IE9-Win7", :primary => false}
 ]
 
 Vagrant.configure(2) do |config|
 	# Map each box name against the vagrant catalog from mark huber
 	boxes.each do |box|
-		config.vm.define box[:name], autostart: false do |machine|
+		config.vm.define box[:name], autostart: box[:primary], primary: box[:primary] do |machine|
 			machine.vm.box = box[:box]
 		end
 	end
