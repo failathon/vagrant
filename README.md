@@ -12,23 +12,11 @@ vagrant plugin install vagrant-hostmanager vagrant-hosts vagrant-multi-putty
 ```
 
 ## Usage
-To use a template, copy the template of your choice to a working directory and rename it to vagrantfile
+To use a template, copy the template of your choice to a working directory and rename it to vagrantfile.
 ```bash
 cp Vagrantfile_nginxdemo /tmp/vagrantfile
 cd /tmp
 vagrant up
-```
-
-For the modern-ie-vagrant / workstation template, specify the desired Windows & IE version like so:
-```bash
-cp Vagrantfile_modern-ie-vagrant /tmp/vagrantfile
-cd /tmp
-vagrant up IE11-Win7
-```
-
-Multiple hosts can be specified also:
-```bash
-vagrant up IE11-Win7 IE10-Win7 IE9-Win7
 ```
 
 ## Vagrant templates
@@ -47,13 +35,6 @@ vagrant up IE11-Win7 IE10-Win7 IE9-Win7
 
 ### modern-ie-vagrant/workstation Boxes
 
-* IE10-Win7
-* IE10-Win8
-* IE11-Win10
-* IE11-Win7 
-* IE11-Win8.1
-* IE6-WinXP
-* IE7-Vista
-* IE8-Win7
-* IE8-WinXP
-* IE9-Win7
+* EdgeOnWindows10
+* IE11onWin8.1
+* Win7.1
